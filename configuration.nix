@@ -275,6 +275,42 @@ environment.etc."waybar/config".text = ''
     }
   '';
 
+#Dark_Mode
+# GTK theme for dark mode
+programs.dconf.enable = true;
+
+system.activationScripts.gtkConfig = ''
+  mkdir -p /home/haider/.config/gtk-3.0
+  mkdir -p /home/haider/.config/gtk-4.0
+
+ cat > /home/haider/.config/gtk-3.0/settings.ini << 'EOF'
+[Settings]
+gtk-application-prefer-dark-theme=1
+gtk-theme-name=Adwaita-dark
+gtk-icon-theme-name=Adwaita
+gtk-font-name=JetBrainsMono Nerd Font 11
+gtk-cursor-theme-name=Bibata-Modern-Ice
+gtk-cursor-theme-size=24
+EOF
+
+  cat > /home/haider/.config/gtk-4.0/settings.ini << 'EOF'
+[Settings]
+gtk-application-prefer-dark-theme=1
+gtk-theme-name=Adwaita-dark
+gtk-icon-theme-name=Adwaita
+gtk-font-name=JetBrainsMono Nerd Font 11
+gtk-cursor-theme-name=Bibata-Modern-Ice
+gtk-cursor-theme-size=24
+EOF
+
+  chown -R haider:users /home/haider/.config/gtk-3.0
+  chown -R haider:users /home/haider/.config/gtk-4.0
+'';
+
+
+
+
+
 
 # ===Hyprland_config====
  environment.etc."hypr/hyprland.conf".text = ''
@@ -299,6 +335,9 @@ environment.etc."waybar/config".text = ''
     ### AUTOSTART ###
     #################
     exec-once = sh /etc/waybar/start.sh & swww
+    exec = gsettings set org.gnome.desktop.interface gtk-theme "YOUR_DARK_GTK3_THEME"   # for GTK3 apps
+    exec = gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"   # for GTK4 apps
+    exec-once = waypaper --restore
     #############################
     ### ENVIRONMENT VARIABLES ###
     #############################
@@ -306,7 +345,7 @@ environment.etc."waybar/config".text = ''
     # See https://wiki.hypr.land/Configuring/Environment-variables/
     env = XCURSOR_SIZE,24
     env = HYPRCURSOR_SIZE,24
-
+    env = QT_QPA_PLATFORMTHEME,qt6ct   # for Qt apps
     #####################
     ### LOOK AND FEEL ###
     #####################
@@ -495,6 +534,9 @@ environment.etc."waybar/config".text = ''
     # Fix some dragging issues with XWayland
     windowrule = nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0
     windowrulev2 = opacity 0.85 0.85,class:^(foot)$
+    windowrulev2 = opacity 0.85 0.85,class:^(nemo)$
+    windowrulev2 = opacity 0.85 0.85,class:^(brave-browser)$
+
   '';
 
 
@@ -511,17 +553,25 @@ environment.etc."waybar/config".text = ''
     git
     curl
     brave
+(pkgs.writeShellScriptBin "brave" ''
+    exec ${pkgs.brave}/bin/brave \
+      --enable-features=VaapiVideoDecoder,VaapiVideoEncoder,CanvasOOPRasterization \
+      --enable-gpu-rasterization \
+      --enable-zero-copy \
+      --ignore-gpu-blocklist \
+      --enable-gpu-compositing \
+      --disable-gpu-driver-bug-workarounds \
+      "$@"
+  '')
     psmisc
     foot
+    nemo
     fuzzel
     waybar
     waypaper
-    rofi
     swww
-    nautilus
     wl-clipboard 
     vscodium 
-    windsurf 
     nitch
     pavucontrol
     bibata-cursors
@@ -531,6 +581,7 @@ environment.etc."waybar/config".text = ''
     qt6.qtwayland
     xdg-utils
     xdg-desktop-portal
+    xdg-desktop-portal-gtk
     xdg-desktop-portal-hyprland
     libnotify
     fzf
@@ -538,17 +589,11 @@ environment.etc."waybar/config".text = ''
     llvmPackages.systemLibcxxClang
     grim
     slurp
-    swaynotificationcenter
-    blueman
-    networkmanagerapplet
-    hyprpicker
-    yazi
     btop
     cava
     matugen
-    playerctl
-    brightnessctl
-    pamixer
+    adwaita-icon-theme
+    gnome-themes-extra
  ];
 
   fonts.packages = with pkgs; [
