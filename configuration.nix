@@ -377,6 +377,8 @@ EOF
             size = 10
             passes = 1
             vibrancy = 0.1696
+            noise = 0.08
+            xray = false
         }
     }
 
@@ -536,7 +538,7 @@ EOF
     windowrulev2 = opacity 0.85 0.85,class:^(foot)$
     windowrulev2 = opacity 0.85 0.85,class:^(nemo)$
     windowrulev2 = opacity 0.85 0.85,class:^(brave-browser)$
-
+    windowrulev2 = opacity 0.85 0.85,class:^(VSCodium)$
   '';
 
 
@@ -594,6 +596,9 @@ EOF
     matugen
     adwaita-icon-theme
     gnome-themes-extra
+    rustup
+    mangohud
+    goverlay
  ];
 
   fonts.packages = with pkgs; [
