@@ -52,10 +52,230 @@
     XCURSOR_SIZE = "24";
   };
 
-  programs.hyprland = {
+programs.hyprland = {
     enable = true;
     xwayland.enable = true;
   };
+
+
+
+system.activationScripts.footConfig = ''
+  mkdir -p /home/haider/.config/foot
+  cat > /home/haider/.config/foot/foot.ini << 'EOF'
+font=JetBrainsMono NF:size=16
+pad=8x8 center-when-maximized-and-fullscreen
+
+[colors]
+foreground=c0caf5
+background=1a1b26
+
+regular0=15161E
+regular1=f7768e
+regular2=9ece6a
+regular3=e0af68
+regular4=7aa2f7
+regular5=bb9af7
+regular6=7dcfff
+regular7=a9b1d6
+
+bright0=414868
+bright1=f7768e
+bright2=9ece6a
+bright3=e0af68
+bright4=7aa2f7
+bright5=bb9af7
+bright6=7dcfff
+bright7=c0caf5
+
+dim0=ff9e64
+dim1=db4b4b
+
+alpha=0.9
+EOF
+  chown haider:users /home/haider/.config/foot/foot.ini
+'';
+
+system.activationScripts.fuzzelConfig = ''
+  mkdir -p /home/haider/.config/fuzzel
+  cat > /home/haider/.config/fuzzel/fuzzel.ini << 'EOF'
+[main]
+font=JetBrainsMono Nerd Font:size=14
+dpi-aware=yes
+icon-theme=Papirus-Dark
+layer=overlay
+terminal=foot
+width=40
+horizontal-pad=20
+vertical-pad=10
+inner-pad=10
+
+[colors]
+background=1a1b26ee
+text=c0caf5ff
+match=7aa2f7ff
+selection=33467cff
+selection-text=c0caf5ff
+selection-match=7aa2f7ff
+border=7aa2f7ff
+
+[border]
+width=2
+radius=10
+EOF
+  chown haider:users /home/haider/.config/fuzzel/fuzzel.ini
+'';
+
+
+
+  environment.etc."waybar/start.sh" = {
+    text = ''
+      #!/bin/sh
+      # Use pkill to forcefully terminate any 'waybar' process owned by the current user
+      ${pkgs.psmisc}/bin/pkill -9 -u $USER waybar
+
+      # A tiny delay to ensure the process is fully terminated
+      sleep 0.1
+
+      # Start a new Waybar instance in the background
+      waybar -c /etc/waybar/config -s /etc/waybar/style.css &
+    '';
+  };
+
+environment.etc."waybar/config".text = ''
+    {
+        "layer": "top",
+        "position": "top",
+        "height": 30,
+        "modules-left": ["hyprland/workspaces", "custom/sep", "hyprland/window"],
+        "modules-center": [],
+        "modules-right": ["custom/sep", "network", "custom/sep", "cpu", "custom/sep", "memory", "custom/sep", "disk", "custom/sep", "clock", "custom/sep", "tray"],
+
+        "hyprland/workspaces": {
+            "disable-scroll": true,
+            "all-outputs": true,
+            "warp-on-scroll": false,
+            "format": "{name}",
+            "persistent-workspaces": {
+                "*": 9
+            }
+        },
+
+        "hyprland/window": {
+            "max-length": 40,
+            "separate-outputs": false
+        },
+
+        "custom/sep": {
+            "format": "|",
+            "interval": "once",
+            "tooltip": false
+        },
+
+        "network": {
+            "format": "Online",
+            "format-disconnected": "Offline"
+        },
+
+        "cpu": {
+            "format": "CPU: {usage}%",
+            "tooltip": false
+        },
+
+        "memory": {
+            "format": "Mem: {used}GiB"
+        },
+
+        "disk": {
+            "interval": 60,
+            "path": "/",
+            "format": "Disk: {free}"
+        },
+
+        "clock": {},
+        "tray": {}
+    }
+  '';
+
+ environment.etc."waybar/style.css".text = ''
+    @define-color bg #1a1b26;
+    @define-color fg #a9b1d6;
+    @define-color blk #32344a;
+    @define-color red #f7768e;
+    @define-color grn #9ece6a;
+    @define-color ylw #e0af68;
+    @define-color blu #7aa2f7;
+    @define-color mag #ad8ee6;
+    @define-color cyn #0db9d7;
+    @define-color brblk #444b6a;
+    @define-color wht #ffffff;
+
+    * {
+      font-family: "JetBrainsMono Nerd Font", monospace;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    window#waybar {
+      background: @bg;
+      color: @fg;
+    }
+
+    #workspaces button {
+      padding: 0 6px;
+      color: @cyn;
+      background: transparent;
+      border-bottom: 3px solid @bg;
+    }
+
+    #workspaces button.active {
+      color: @cyn;
+      border-bottom: 3px solid @mag;
+    }
+
+    #workspaces button.empty {
+      color: @wht;
+    }
+
+    #workspaces button.empty.active {
+      color: @cyn;
+      border-bottom: 3px solid @mag;
+    }
+
+    #clock, #custom-sep, #battery, #cpu, #memory, #disk, #network, #tray {
+      padding: 0 8px;
+    }
+
+    #custom-sep {
+      color: @brblk;
+    }
+
+    #clock {
+      color: @cyn;
+      border-bottom: 4px solid @cyn;
+    }
+
+    #disk {
+      color: @ylw;
+      border-bottom: 4px solid @ylw;
+    }
+
+    #memory {
+      color: @mag;
+      border-bottom: 4px solid @mag;
+    }
+
+    #cpu {
+      color: @grn;
+      border-bottom: 4px solid @grn;
+    }
+
+    #network {
+      color: @blu;
+      border-bottom: 4px solid @blu;
+    }
+  '';
+
+
 # ===Hyprland_config====
  environment.etc."hypr/hyprland.conf".text = ''
     ################
@@ -78,8 +298,7 @@
     #################
     ### AUTOSTART ###
     #################
-    exec-once = waybar & swww
-
+    exec-once = sh /etc/waybar/start.sh & swww
     #############################
     ### ENVIRONMENT VARIABLES ###
     #############################
@@ -95,7 +314,7 @@
     general {
         gaps_in = 2
         gaps_out = 20
-        border_size = 2
+        border_size = 0
         col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
         col.inactive_border = rgba(595959aa)
         resize_on_border = false
@@ -116,7 +335,7 @@
         }
         blur {
             enabled = true
-            size = 3
+            size = 10
             passes = 1
             vibrancy = 0.1696
         }
@@ -174,7 +393,9 @@
         kb_model =
         kb_options =
         kb_rules =
-
+        repeat_rate = 35
+        repeat_delay = 200
+        accel_profile=flat
         follow_mouse = 1
         sensitivity = 0 
 
@@ -202,7 +423,7 @@
     bind = Super, D, exec, fuzzel
     bind = Super, P, pseudo, # dwindle
     bind = Super, J, togglesplit, # dwindle
-
+    bind = SUPER SHIFT, R, exec, sh /etc/waybar/start.sh
     # Move focus with mainMod + arrow keys
     bind = Super, left, movefocus, l
     bind = Super, right, movefocus, r
@@ -271,11 +492,15 @@
 
     # Ignore maximize requests from apps. You'll probably like this.
     windowrule = suppressevent maximize, class:.*
-
     # Fix some dragging issues with XWayland
     windowrule = nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0
+    windowrulev2 = opacity 0.85 0.85,class:^(foot)$
   '';
-environment.sessionVariables = {
+
+
+
+
+ environment.sessionVariables = {
     HYPRLAND_CONFIG = "/etc/hypr/hyprland.conf";
   }; 
 
@@ -286,13 +511,14 @@ environment.sessionVariables = {
     git
     curl
     brave
+    psmisc
     foot
     fuzzel
     waybar
     waypaper
+    rofi
     swww
-    neovim
-    nemo 
+    nautilus
     wl-clipboard 
     vscodium 
     windsurf 
@@ -307,8 +533,23 @@ environment.sessionVariables = {
     xdg-desktop-portal
     xdg-desktop-portal-hyprland
     libnotify
-    dunst
-  ];
+    fzf
+    fd
+    llvmPackages.systemLibcxxClang
+    grim
+    slurp
+    swaynotificationcenter
+    blueman
+    networkmanagerapplet
+    hyprpicker
+    yazi
+    btop
+    cava
+    matugen
+    playerctl
+    brightnessctl
+    pamixer
+ ];
 
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
