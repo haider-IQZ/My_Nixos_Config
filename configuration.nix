@@ -19,8 +19,15 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelPackages = pkgs.linuxPackages_zen;
+  boot.kernelParams = [ 
+    "amd_iommu=on" 
+    "iommu=pt" 
+    "pcie_acs_override=downstream,multifunction" 
+  ];  
 
-  networking.hostName = "soka";
+
+  networking.hostName = "haider";
   networking.networkmanager.enable = true;
 
   time.timeZone = "Asia/Baghdad";
@@ -38,9 +45,9 @@
     wireplumber.enable = true;
   };
 
-  users.users.haider = {
+  users.users.soka = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "video" "audio" "input" ];
+    extraGroups = [ "wheel" "video" "audio" "input" "libvirtd"];
     packages = with pkgs; [ tree ];
   };
 
@@ -52,16 +59,14 @@
     XCURSOR_SIZE = "24";
   };
 
-programs.hyprland = {
+  programs.hyprland = {
     enable = true;
     xwayland.enable = true;
   };
 
-
-
-system.activationScripts.footConfig = ''
-  mkdir -p /home/haider/.config/foot
-  cat > /home/haider/.config/foot/foot.ini << 'EOF'
+  system.activationScripts.footConfig = ''
+    mkdir -p /home/soka/.config/foot
+    cat > /home/soka/.config/foot/foot.ini << 'EOF'
 font=JetBrainsMono NF:size=16
 pad=8x8 center-when-maximized-and-fullscreen
 
@@ -92,12 +97,12 @@ dim1=db4b4b
 
 alpha=0.9
 EOF
-  chown haider:users /home/haider/.config/foot/foot.ini
-'';
+    chown soka:users /home/soka/.config/foot/foot.ini
+  '';
 
-system.activationScripts.fuzzelConfig = ''
-  mkdir -p /home/haider/.config/fuzzel
-  cat > /home/haider/.config/fuzzel/fuzzel.ini << 'EOF'
+  system.activationScripts.fuzzelConfig = ''
+    mkdir -p /home/soka/.config/fuzzel
+    cat > /home/soka/.config/fuzzel/fuzzel.ini << 'EOF'
 [main]
 font=JetBrainsMono Nerd Font:size=14
 dpi-aware=yes
@@ -122,10 +127,8 @@ border=7aa2f7ff
 width=2
 radius=10
 EOF
-  chown haider:users /home/haider/.config/fuzzel/fuzzel.ini
-'';
-
-
+    chown soka:users /home/soka/.config/fuzzel/fuzzel.ini
+  '';
 
   environment.etc."waybar/start.sh" = {
     text = ''
@@ -141,7 +144,7 @@ EOF
     '';
   };
 
-environment.etc."waybar/config".text = ''
+  environment.etc."waybar/config".text = ''
     {
         "layer": "top",
         "position": "top",
@@ -196,7 +199,7 @@ environment.etc."waybar/config".text = ''
     }
   '';
 
- environment.etc."waybar/style.css".text = ''
+  environment.etc."waybar/style.css".text = ''
     @define-color bg #1a1b26;
     @define-color fg #a9b1d6;
     @define-color blk #32344a;
@@ -275,15 +278,15 @@ environment.etc."waybar/config".text = ''
     }
   '';
 
-#Dark_Mode
-# GTK theme for dark mode
-programs.dconf.enable = true;
+  #Dark_Mode
+  # GTK theme for dark mode
+  programs.dconf.enable = true;
 
-system.activationScripts.gtkConfig = ''
-  mkdir -p /home/haider/.config/gtk-3.0
-  mkdir -p /home/haider/.config/gtk-4.0
+  system.activationScripts.gtkConfig = ''
+    mkdir -p /home/soka/.config/gtk-3.0
+    mkdir -p /home/soka/.config/gtk-4.0
 
- cat > /home/haider/.config/gtk-3.0/settings.ini << 'EOF'
+    cat > /home/soka/.config/gtk-3.0/settings.ini << 'EOF'
 [Settings]
 gtk-application-prefer-dark-theme=1
 gtk-theme-name=Adwaita-dark
@@ -293,7 +296,7 @@ gtk-cursor-theme-name=Bibata-Modern-Ice
 gtk-cursor-theme-size=24
 EOF
 
-  cat > /home/haider/.config/gtk-4.0/settings.ini << 'EOF'
+    cat > /home/soka/.config/gtk-4.0/settings.ini << 'EOF'
 [Settings]
 gtk-application-prefer-dark-theme=1
 gtk-theme-name=Adwaita-dark
@@ -303,17 +306,12 @@ gtk-cursor-theme-name=Bibata-Modern-Ice
 gtk-cursor-theme-size=24
 EOF
 
-  chown -R haider:users /home/haider/.config/gtk-3.0
-  chown -R haider:users /home/haider/.config/gtk-4.0
-'';
+    chown -R soka:users /home/soka/.config/gtk-3.0
+    chown -R soka:users /home/soka/.config/gtk-4.0
+  '';
 
-
-
-
-
-
-# ===Hyprland_config====
- environment.etc."hypr/hyprland.conf".text = ''
+  # ===Hyprland_config====
+  environment.etc."hypr/hyprland.conf".text = ''
     ################
     ### MONITORS ###
     ################
@@ -335,8 +333,8 @@ EOF
     ### AUTOSTART ###
     #################
     exec-once = sh /etc/waybar/start.sh & swww
-    exec = gsettings set org.gnome.desktop.interface gtk-theme "YOUR_DARK_GTK3_THEME"   # for GTK3 apps
-    exec = gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"   # for GTK4 apps
+    exec = gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
+    exec = gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
     exec-once = waypaper --restore
     #############################
     ### ENVIRONMENT VARIABLES ###
@@ -345,7 +343,7 @@ EOF
     # See https://wiki.hypr.land/Configuring/Environment-variables/
     env = XCURSOR_SIZE,24
     env = HYPRCURSOR_SIZE,24
-    env = QT_QPA_PLATFORMTHEME,qt6ct   # for Qt apps
+    env = QT_QPA_PLATFORMTHEME,qt6ct
     #####################
     ### LOOK AND FEEL ###
     #####################
@@ -457,6 +455,7 @@ EOF
     ###################
     bind = Super, W, exec, waypaper
     bind = Super, X, exec, brave
+    bind = , Print, exec, grim -g "$(slurp)" - | wl-copy
     bind = Super, Q, exec, $terminal
     bind = Super, C, killactive,
     bind = Super, E, exec, $fileManager
@@ -479,7 +478,7 @@ EOF
     bind = Super, 5, workspace, 5
     bind = Super, 6, workspace, 6
     bind = Super, 7, workspace, 7
-    bind = Super, 7, workspace, 8
+    bind = Super, 8, workspace, 8
     bind = Super, 9, workspace, 9
     bind = Super, 0, workspace, 10
 
@@ -541,12 +540,17 @@ EOF
     windowrulev2 = opacity 0.85 0.85,class:^(VSCodium)$
   '';
 
-
-
-
- environment.sessionVariables = {
+  environment.sessionVariables = {
     HYPRLAND_CONFIG = "/etc/hypr/hyprland.conf";
+    BROWSER = "brave";
   }; 
+
+ xdg.mime.defaultApplications = {
+    "text/html" = "brave-browser.desktop";
+    "x-scheme-handler/http" = "brave-browser.desktop";
+    "x-scheme-handler/https" = "brave-browser.desktop";
+  };
+
 
   # === PKGS === 
   environment.systemPackages = with pkgs; [
@@ -555,16 +559,16 @@ EOF
     git
     curl
     brave
-(pkgs.writeShellScriptBin "brave" ''
-    exec ${pkgs.brave}/bin/brave \
-      --enable-features=VaapiVideoDecoder,VaapiVideoEncoder,CanvasOOPRasterization \
-      --enable-gpu-rasterization \
-      --enable-zero-copy \
-      --ignore-gpu-blocklist \
-      --enable-gpu-compositing \
-      --disable-gpu-driver-bug-workarounds \
-      "$@"
-  '')
+    (pkgs.writeShellScriptBin "brave" ''
+      exec ${pkgs.brave}/bin/brave \
+        --enable-features=VaapiVideoDecoder,VaapiVideoEncoder,CanvasOOPRasterization \
+        --enable-gpu-rasterization \
+        --enable-zero-copy \
+        --ignore-gpu-blocklist \
+        --enable-gpu-compositing \
+        --disable-gpu-driver-bug-workarounds \
+        "$@"
+    '')
     psmisc
     foot
     nemo
@@ -599,11 +603,143 @@ EOF
     rustup
     mangohud
     goverlay
- ];
+    antigravity
+    xdg-utils
+    obsidian
+    obs-studio
+    xdg-user-dirs
+    axel
+  ];
+
 
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
   ];
+  
+#Virt-manager-setup
+programs.virt-manager.enable = true;
+virtualisation.libvirtd = {
+  enable = true;
+  qemu = {
+    package = pkgs.qemu_kvm;
+    runAsRoot = true;
+    swtpm.enable = true;
+  };
+};
+
+
+  systemd.services.libvirt-default-net-autostart = {
+    description = "Ensure default libvirt network is started";
+    after = [ "libvirtd.service" ];
+    requires = [ "libvirtd.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      # 1. Check if 'default' network exists
+      if ${pkgs.libvirt}/bin/virsh net-info default > /dev/null 2>&1; then
+        
+        # 2. Enable Autostart (Apply and ignore if already set)
+        ${pkgs.libvirt}/bin/virsh net-autostart default || true
+        
+        # 3. Start if not running
+        # We use simple 'net-list' which lists active networks by default
+        if ! ${pkgs.libvirt}/bin/virsh net-list | grep -q default; then
+          ${pkgs.libvirt}/bin/virsh net-start default || true
+        fi
+      fi
+    '';
+  };
+
+
+
+  # -------------------------------------------------------------
+  # UNIVERSAL GPU PASSTHROUGH HOOK
+  # (Works for win10, arch, linux, or anything in the list!)
+  # -------------------------------------------------------------
+  virtualisation.libvirtd.hooks.qemu = {
+    "gpu-passthrough" = pkgs.writeScript "qemu-hook-gpu" ''
+      #!/bin/sh
+
+      # 1. LIST OF VMS THAT GET THE GPU
+      # (Add as many names as you want here, separated by space)
+      ALLOWED_VMS="win10 arch linux steam-os"
+
+      # 2. CHECK: IS THE CURRENT VM IN THE LIST?
+      GUEST_NAME="$1"
+      if ! echo "$ALLOWED_VMS" | grep -w -q "$GUEST_NAME"; then
+         # If not in list, exit silently and do nothing.
+         # This lets safe VMs run normally in the background!
+         exit 0
+      fi
+
+      # -----------------------------------------------------------
+      # IF WE ARE HERE, IT'S A GAMING VM! ACTIVATE PROTOCOL.
+      # -----------------------------------------------------------
+      
+      # Define GPU IDs
+      VIRSH_GPU_VIDEO="pci_0000_09_00_0"
+      VIRSH_GPU_AUDIO="pci_0000_09_00_1"
+      
+      COMMAND="$2"
+      STATE="$3"
+
+      if [ "$COMMAND" = "prepare" ] && [ "$STATE" = "begin" ]; then
+        systemctl stop display-manager
+        echo 0 > /sys/class/vtconsole/vtcon0/bind
+        echo 0 > /sys/class/vtconsole/vtcon1/bind
+        echo efi-framebuffer.0 > /sys/bus/platform/drivers/efi-framebuffer/unbind
+        sleep 4
+        modprobe -r nvidia_drm nvidia_modeset nvidia_uvm nvidia
+        virsh nodedev-detach $VIRSH_GPU_VIDEO
+        virsh nodedev-detach $VIRSH_GPU_AUDIO
+        modprobe vfio vfio_pci vfio_iommu_type1
+      fi
+
+      if [ "$COMMAND" = "release" ] && [ "$STATE" = "end" ]; then
+        modprobe -r vfio_pci vfio_iommu_type1 vfio
+        virsh nodedev-reattach $VIRSH_GPU_VIDEO
+        virsh nodedev-reattach $VIRSH_GPU_AUDIO
+        echo 1 > /sys/class/vtconsole/vtcon0/bind
+        echo 1 > /sys/class/vtconsole/vtcon1/bind
+        echo "efi-framebuffer.0" > /sys/bus/platform/drivers/efi-framebuffer/bind
+        modprobe nvidia_drm nvidia_modeset nvidia_uvm nvidia
+        systemctl start display-manager
+      fi
+    '';
+  };
+
+
+#hard-drive-stuff
+services.gvfs.enable = true;
+services.udisks2.enable = true;
+fileSystems."/mnt" = {
+    device = "/dev/disk/by-uuid/b18e8d99-0fe0-48f8-9dcd-a064448f63a4";
+    fsType = "ext4";
+    options = [ "nofail" ]; # "nofail" is CRITICAL!
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   system.stateVersion = "25.11"; 
 }
