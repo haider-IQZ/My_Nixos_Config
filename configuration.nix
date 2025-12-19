@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs,inputs, ... }:
 
 {
   imports = [ 
@@ -609,6 +609,7 @@ EOF
     obs-studio
     xdg-user-dirs
     axel
+    inputs.zen-browser.packages."${system}".default
   ];
 
 
@@ -728,18 +729,7 @@ fileSystems."/mnt" = {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   system.stateVersion = "25.11"; 
 }
