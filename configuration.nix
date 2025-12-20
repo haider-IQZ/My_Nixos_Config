@@ -3,6 +3,7 @@
 {
   imports = [ 
     ./hardware-configuration.nix
+    ./neovim.nix
   ];
 
   # UnFree_pkgs
@@ -454,6 +455,7 @@ EOF
     ### KEYBINDINGS ###
     ###################
     bind = Super, W, exec, waypaper
+    bind = Super, K, exec, codium
     bind = Super, X, exec, brave
     bind = , Print, exec, grim -g "$(slurp)" - | wl-copy
     bind = Super, Q, exec, $terminal
@@ -609,13 +611,38 @@ EOF
     obs-studio
     xdg-user-dirs
     axel
+		helix
     inputs.zen-browser.packages."${system}".default
   ];
 
 
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
+    inter        
+    noto-fonts   
+    noto-fonts-color-emoji
+    roboto       
   ];
+  
+  fonts.fontconfig = {
+    enable = true;
+    defaultFonts = {
+      sansSerif = [ "Inter" "Noto Sans Arabic" ];
+      serif = [ "Noto Serif" "Noto Serif Arabic" ];
+      monospace = [ "JetBrainsMono Nerd Font" ];
+    };
+    
+    
+    subpixel = {
+      rgba = "rgb";
+      lcdfilter = "default";
+    };
+    hinting = {
+      enable = true;
+      style = "slight";
+    };
+    antialias = true;
+  };
   
 #Virt-manager-setup
 programs.virt-manager.enable = true;
