@@ -1,9 +1,8 @@
-{ config, lib, pkgs,inputs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   imports = [ 
     ./hardware-configuration.nix
-    ./neovim.nix
   ];
 
   # UnFree_pkgs
@@ -20,7 +19,7 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_zen;
+  boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
   boot.kernelParams = [ 
     "amd_iommu=on" 
     "iommu=pt" 
@@ -33,6 +32,7 @@
 
   time.timeZone = "Asia/Baghdad";
 
+  xdg.portal.enable = true;
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;  
   services.displayManager.defaultSession = "hyprland";
@@ -560,17 +560,7 @@ EOF
     wget
     git
     curl
-    brave
-    (pkgs.writeShellScriptBin "brave" ''
-      exec ${pkgs.brave}/bin/brave \
-        --enable-features=VaapiVideoDecoder,VaapiVideoEncoder,CanvasOOPRasterization \
-        --enable-gpu-rasterization \
-        --enable-zero-copy \
-        --ignore-gpu-blocklist \
-        --enable-gpu-compositing \
-        --disable-gpu-driver-bug-workarounds \
-        "$@"
-    '')
+    floorp-bin 
     psmisc
     foot
     nemo
@@ -599,6 +589,7 @@ EOF
     slurp
     btop
     cava
+    varia
     matugen
     adwaita-icon-theme
     gnome-themes-extra
@@ -611,8 +602,11 @@ EOF
     obs-studio
     xdg-user-dirs
     axel
-		helix
-    inputs.zen-browser.packages."${system}".default
+    helix
+    nwg-look
+    kdePackages.qtstyleplugin-kvantum
+    tokyonight-gtk-theme
+    xdg-user-dirs
   ];
 
 
@@ -727,14 +721,35 @@ virtualisation.libvirtd = {
       fi
 
       if [ "$COMMAND" = "release" ] && [ "$STATE" = "end" ]; then
-        modprobe -r vfio_pci vfio_iommu_type1 vfio
+        # 1. Unload VFIO-PCI Drivers
+        modprobe -r vfio_pci
+        modprobe -r vfio_iommu_type1
+        modprobe -r vfio
+
+        # 2. Reattach GPU to Host
         virsh nodedev-reattach $VIRSH_GPU_VIDEO
         virsh nodedev-reattach $VIRSH_GPU_AUDIO
+
+        # 3. Rebind VT Consoles (Adapted: 1 for vtcon0, 0 for vtcon1)
         echo 1 > /sys/class/vtconsole/vtcon0/bind
-        echo 1 > /sys/class/vtconsole/vtcon1/bind
+        echo 0 > /sys/class/vtconsole/vtcon1/bind
+
+        # 4. Wake up GPU (Adapted: using nvidia-smi as it is standard in NixOS drivers)
+        nvidia-smi > /dev/null 2>&1
+
+        # 5. Bind EFI-Framebuffer
         echo "efi-framebuffer.0" > /sys/bus/platform/drivers/efi-framebuffer/bind
-        modprobe nvidia_drm nvidia_modeset nvidia_uvm nvidia
-        systemctl start display-manager
+
+        # 6. Load Nvidia Drivers (Exact order from your image)
+        modprobe nvidia_drm
+        modprobe nvidia_modeset
+        modprobe drm_kms_helper
+        modprobe nvidia
+        modprobe drm
+        modprobe nvidia_uvm
+
+        # 7. Restart Display Manager (Adapted for NixOS)
+        systemctl start display-manager.service
       fi
     '';
   };
@@ -756,7 +771,6 @@ fileSystems."/mnt" = {
 
 
 
-nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   system.stateVersion = "25.11"; 
 }
