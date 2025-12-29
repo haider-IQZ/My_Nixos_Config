@@ -568,6 +568,7 @@ EOF
     waybar
     waypaper
     swww
+    github-desktop
     wl-clipboard 
     vscodium 
     nitch
