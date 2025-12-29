@@ -72,29 +72,26 @@ font=JetBrainsMono NF:size=16
 pad=8x8 center-when-maximized-and-fullscreen
 
 [colors]
-foreground=c0caf5
-background=1a1b26
+foreground=ebdbb2
+background=282828
 
-regular0=15161E
-regular1=f7768e
-regular2=9ece6a
-regular3=e0af68
-regular4=7aa2f7
-regular5=bb9af7
-regular6=7dcfff
-regular7=a9b1d6
+regular0=282828
+regular1=cc241d
+regular2=98971a
+regular3=d79921
+regular4=458588
+regular5=b16286
+regular6=689d6a
+regular7=a89984
 
-bright0=414868
-bright1=f7768e
-bright2=9ece6a
-bright3=e0af68
-bright4=7aa2f7
-bright5=bb9af7
-bright6=7dcfff
-bright7=c0caf5
-
-dim0=ff9e64
-dim1=db4b4b
+bright0=928374
+bright1=fb4934
+bright2=b8bb26
+bright3=fabd2f
+bright4=83a598
+bright5=d3869b
+bright6=8ec07c
+bright7=ebdbb2
 
 alpha=0.9
 EOF
@@ -116,13 +113,13 @@ vertical-pad=10
 inner-pad=10
 
 [colors]
-background=1a1b26ee
-text=c0caf5ff
-match=7aa2f7ff
-selection=33467cff
-selection-text=c0caf5ff
-selection-match=7aa2f7ff
-border=7aa2f7ff
+background=282828ee
+text=ebdbb2ff
+match=fabd2fff
+selection=3c3836ff
+selection-text=ebdbb2ff
+selection-match=fabd2fff
+border=b8bb26ff
 
 [border]
 width=2
@@ -149,10 +146,10 @@ EOF
     {
         "layer": "top",
         "position": "top",
-        "height": 30,
+        "height": 38,
         "modules-left": ["hyprland/workspaces", "custom/sep", "hyprland/window"],
         "modules-center": [],
-        "modules-right": ["custom/sep", "network", "custom/sep", "cpu", "custom/sep", "memory", "custom/sep", "disk", "custom/sep", "clock", "custom/sep", "tray"],
+        "modules-right": ["custom/sep", "memory", "custom/sep", "clock", "custom/sep", "tray"],
 
         "hyprland/workspaces": {
             "disable-scroll": true,
@@ -175,24 +172,8 @@ EOF
             "tooltip": false
         },
 
-        "network": {
-            "format": "Online",
-            "format-disconnected": "Offline"
-        },
-
-        "cpu": {
-            "format": "CPU: {usage}%",
-            "tooltip": false
-        },
-
         "memory": {
             "format": "Mem: {used}GiB"
-        },
-
-        "disk": {
-            "interval": 60,
-            "path": "/",
-            "format": "Disk: {free}"
         },
 
         "clock": {},
@@ -201,21 +182,21 @@ EOF
   '';
 
   environment.etc."waybar/style.css".text = ''
-    @define-color bg #1a1b26;
-    @define-color fg #a9b1d6;
-    @define-color blk #32344a;
-    @define-color red #f7768e;
-    @define-color grn #9ece6a;
-    @define-color ylw #e0af68;
-    @define-color blu #7aa2f7;
-    @define-color mag #ad8ee6;
-    @define-color cyn #0db9d7;
-    @define-color brblk #444b6a;
-    @define-color wht #ffffff;
+     @define-color bg #282828;
+    @define-color fg #ebdbb2;
+    @define-color blk #282828;
+    @define-color red #fb4934;
+    @define-color grn #b8bb26;
+    @define-color ylw #fabd2f;
+    @define-color blu #83a598;
+    @define-color mag #d3869b;
+    @define-color cyn #8ec07c;
+    @define-color brblk #928374;
+    @define-color wht #ebdbb2;
 
     * {
       font-family: "JetBrainsMono Nerd Font", monospace;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: bold;
     }
 
@@ -226,27 +207,27 @@ EOF
 
     #workspaces button {
       padding: 0 6px;
-      color: @cyn;
+      color: @fg;
       background: transparent;
       border-bottom: 3px solid @bg;
     }
 
     #workspaces button.active {
-      color: @cyn;
-      border-bottom: 3px solid @mag;
+      color: @grn;
+      border-bottom: 3px solid @grn;
     }
 
     #workspaces button.empty {
-      color: @wht;
+      color: @brblk;
     }
 
     #workspaces button.empty.active {
-      color: @cyn;
-      border-bottom: 3px solid @mag;
+      color: @grn;
+      border-bottom: 3px solid @grn;
     }
 
     #clock, #custom-sep, #battery, #cpu, #memory, #disk, #network, #tray {
-      padding: 0 8px;
+      padding: 0 10px;
     }
 
     #custom-sep {
@@ -254,8 +235,8 @@ EOF
     }
 
     #clock {
-      color: @cyn;
-      border-bottom: 4px solid @cyn;
+      color: @blu;
+      border-bottom: 4px solid @blu;
     }
 
     #disk {
@@ -274,8 +255,8 @@ EOF
     }
 
     #network {
-      color: @blu;
-      border-bottom: 4px solid @blu;
+      color: @cyn;
+      border-bottom: 4px solid @cyn;
     }
   '';
 
@@ -558,6 +539,7 @@ EOF
   environment.systemPackages = with pkgs; [
     vim
     wget
+    gruvbox-dark-gtk
     git
     curl
     floorp-bin 
