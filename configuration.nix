@@ -3,6 +3,7 @@
 {
   imports = [ 
     ./hardware-configuration.nix
+    ./firefox.nix
   ];
 
   programs.fish = {
