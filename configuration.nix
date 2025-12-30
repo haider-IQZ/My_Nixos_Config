@@ -8,7 +8,6 @@
     ./modules/gaming.nix
     ./modules/gpu_passthrough.nix
     ./modules/hyprland.nix
-    ./modules/waybar.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -93,5 +92,5 @@
     options = [ "nofail" ];
   };
 
-  system.stateVersion = "25.11"; 
+  system.stateVersion = "26.05"; 
 }
