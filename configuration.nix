@@ -32,6 +32,9 @@
   # Time & Locale
   time.timeZone = "Asia/Baghdad";
   nixpkgs.config.allowUnfree = true;
+  
+  # Enable Flakes
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Audio
   security.rtkit.enable = true;
@@ -71,7 +74,7 @@
     '';
     shellAliases = {
       nc = "vim /home/soka/My_Nixos_Config/configuration.nix";
-      nr = "sudo nixos-rebuild switch";
+      nr = "sudo nixos-rebuild switch --flake /home/soka/My_Nixos_Config#haider";
     };
   };
 
@@ -91,6 +94,7 @@
     vscodium
     obsidian
     obs-studio
+    antigravity
     discord
     # Add other random tools here
   ];
