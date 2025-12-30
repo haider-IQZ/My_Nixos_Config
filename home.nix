@@ -2,11 +2,11 @@
 
 {
   imports = [
-    ./modules/home/foot.nix
-    ./modules/home/fuzzel.nix
-    ./modules/home/style.nix
-    ./modules/home/waybar.nix
-    ./modules/home/hyprland.nix
+    ./home-manager/foot.nix
+    ./home-manager/fuzzel.nix
+    ./home-manager/style.nix
+    ./home-manager/waybar.nix
+    ./home-manager/hyprland.nix
   ];
 
   home.username = "soka";

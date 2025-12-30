@@ -3,11 +3,10 @@
 {
   imports = [ 
     ./hardware-configuration.nix
-    ./firefox.nix
-    ./modules/appearance.nix
-    ./modules/gaming.nix
-    ./modules/gpu_passthrough.nix
-    ./modules/hyprland.nix
+    ./system_related/firefox.nix
+    ./system_related/appearance.nix
+    ./system_related/gaming.nix
+    ./system_related/gpu_passthrough.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -44,6 +43,16 @@
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;  
   services.displayManager.defaultSession = "hyprland";
+
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+  };
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-hyprland ];
+  };
   
   users.users.soka = {
     isNormalUser = true;
