@@ -5,6 +5,20 @@
     ./hardware-configuration.nix
   ];
 
+  programs.fish = {
+    enable = true;
+    interactiveShellInit = ''
+      set fish_greeting # Disable greeting
+      nitch
+    '';
+    shellAliases = {
+      nc = "vim /home/soka/My_Nixos_Config/configuration.nix";
+      nr = "sudo nixos-rebuild switch";
+    };
+  };
+
+
+     
   # UnFree_pkgs
   nixpkgs.config.allowUnfree = true;
 
@@ -48,6 +62,7 @@
 
   users.users.soka = {
     isNormalUser = true;
+    shell = pkgs.fish;
     extraGroups = [ "wheel" "video" "audio" "input" "libvirtd"];
     packages = with pkgs; [ tree ];
   };
@@ -540,6 +555,7 @@ EOF
     vim
     wget
     gruvbox-dark-gtk
+    procps
     git
     curl
     floorp-bin 
