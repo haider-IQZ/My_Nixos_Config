@@ -6,13 +6,10 @@
   environment.etc."waybar/start.sh" = {
     text = ''
       #!/bin/sh
-      # Use pkill to forcefully terminate any 'waybar' process owned by the current user
       ${pkgs.psmisc}/bin/pkill -9 -u $USER waybar
 
-      # A tiny delay to ensure the process is fully terminated
       sleep 0.1
 
-      # Start a new Waybar instance in the background
       waybar -c /etc/waybar/config -s /etc/waybar/style.css &
     '';
   };

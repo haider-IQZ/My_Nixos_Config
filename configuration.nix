@@ -4,7 +4,6 @@
   imports = [ 
     ./hardware-configuration.nix
     ./firefox.nix
-    # My Custom Modules
     ./modules/appearance.nix
     ./modules/gaming.nix
     ./modules/gpu_passthrough.nix
@@ -12,8 +11,6 @@
     ./modules/waybar.nix
   ];
 
-
-  # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
@@ -23,18 +20,14 @@
     "pcie_acs_override=downstream,multifunction" 
   ];  
 
-  # Networking
   networking.hostName = "haider";
   networking.networkmanager.enable = true;
 
-  # Time & Locale
   time.timeZone = "Asia/Baghdad";
   nixpkgs.config.allowUnfree = true;
   
-  # Enable Flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  # Audio
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -44,18 +37,15 @@
     wireplumber.enable = true;
   };
 
-  # Graphics Drivers
   hardware.graphics.enable = true;
   hardware.nvidia.open = true;
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia.modesetting.enable = true;
 
-  # Display Manager (SDDM)
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;  
   services.displayManager.defaultSession = "hyprland";
   
-  # User Config
   users.users.soka = {
     isNormalUser = true;
     shell = pkgs.fish;
@@ -63,11 +53,10 @@
     packages = with pkgs; [ tree ];
   };
 
-  # Shell Config
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
-      set fish_greeting # Disable greeting
+      set fish_greeting
       nitch
     '';
     shellAliases = {
@@ -76,12 +65,12 @@
     };
   };
 
-  # General System Packages
   environment.systemPackages = with pkgs; [
     vim
     wget
     git
     curl
+    nemo
     btop
     htop
     fastfetch
@@ -94,10 +83,8 @@
     obs-studio
     antigravity
     discord
-    # Add other random tools here
   ];
   
-  # Hard Drives
   services.gvfs.enable = true;
   services.udisks2.enable = true;
   fileSystems."/mnt" = {

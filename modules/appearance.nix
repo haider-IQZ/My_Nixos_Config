@@ -1,7 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  # GTK Theme Config
   programs.dconf.enable = true;
   system.activationScripts.gtkConfig = ''
     mkdir -p /home/soka/.config/gtk-3.0
@@ -41,7 +40,6 @@ EOF
     tokyonight-gtk-theme
   ];
 
-  # Fonts
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
     inter        

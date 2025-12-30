@@ -1,21 +1,15 @@
 { config, pkgs, ... }:
 
 {
-  # 1. Core Home Manager Settings
   home.username = "soka";
   home.homeDirectory = "/home/soka";
   home.stateVersion = "24.11"; 
 
-  # 2. User Packages (Stuff only YOU need)
   home.packages = with pkgs; [
-    # Add user-specific CLI tools here if you want
     fastfetch
     htop
   ];
 
-  # 3. PROGRAM CONFIGURATIONS (This is where the magic happens)
-
-  # --- FOOT TERMINAL ---
   programs.foot = {
     enable = true;
     settings = {
@@ -27,7 +21,6 @@
         alpha = "0.9";
         foreground = "ebdbb2";
         background = "282828";
-        # ... (We keep the rest of your colors) ...
         regular0 = "282828"; regular1 = "cc241d"; regular2 = "98971a"; regular3 = "d79921";
         regular4 = "458588"; regular5 = "b16286"; regular6 = "689d6a"; regular7 = "a89984";
         bright0 = "928374"; bright1 = "fb4934"; bright2 = "b8bb26"; bright3 = "fabd2f";
@@ -36,7 +29,6 @@
     };
   };
 
-  # --- FUZZEL LAUNCHER ---
   programs.fuzzel = {
     enable = true;
     settings = {
@@ -67,7 +59,6 @@
     };
   };
 
-  # --- GIT ---
   programs.git = {
     enable = true;
     userName = "Soka";

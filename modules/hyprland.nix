@@ -6,14 +6,12 @@
     xwayland.enable = true;
   };
 
-  # Environment variables for Hyprland session
   environment.sessionVariables = {
     HYPRLAND_CONFIG = "/etc/hypr/hyprland.conf";
     XCURSOR_THEME = "Bibata-Modern-Ice";
     XCURSOR_SIZE = "24";
   };
   
-  # Packages useful for a Hyprland Session
   environment.systemPackages = with pkgs; [
     waypaper
     swww
@@ -24,37 +22,19 @@
   ];
 
   environment.etc."hypr/hyprland.conf".text = ''
-    ################
-    ### MONITORS ###
-    ################
-
     monitor=,preferred,auto,auto
-
-    ###################
-    ### MY PROGRAMS ###
-    ###################
 
     $terminal = foot 
     $fileManager = nemo
 
-    #################
-    ### AUTOSTART ###
-    #################
     exec-once = sh /etc/waybar/start.sh & swww
     exec = gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
     exec = gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
     exec-once = waypaper --restore
 
-    #############################
-    ### ENVIRONMENT VARIABLES ###
-    #############################
     env = XCURSOR_SIZE,24
     env = HYPRCURSOR_SIZE,24
     env = QT_QPA_PLATFORMTHEME,qt6ct
-
-    #####################
-    ### LOOK AND FEEL ###
-    #####################
 
     general {
         gaps_in = 2
@@ -129,10 +109,6 @@
         disable_hyprland_logo = false 
     }
 
-    #############
-    ### INPUT ###
-    #############
-
     input {
         kb_layout = us
         kb_variant =
@@ -157,9 +133,6 @@
         sensitivity = -0.5
     }
 
-    ###################
-    ### KEYBINDINGS ###
-    ###################
     bind = Super, W, exec, waypaper
     bind = Super, K, exec, codium
     bind = Super, X, exec, firefox
@@ -169,8 +142,8 @@
     bind = Super, E, exec, $fileManager
     bind = Super, V, togglefloating,
     bind = Super, D, exec, fuzzel
-    bind = Super, P, pseudo, # dwindle
-    bind = Super, J, togglesplit, # dwindle
+    bind = Super, P, pseudo,
+    bind = Super, J, togglesplit,
     bind = SUPER SHIFT, R, exec, sh /etc/waybar/start.sh
     # Move focus with mainMod + arrow keys
     bind = Super, left, movefocus, l
@@ -222,15 +195,10 @@
     bindel = ,XF86MonBrightnessUp, exec, brightnessctl -e4 -n2 set 5%+
     bindel = ,XF86MonBrightnessDown, exec, brightnessctl -e4 -n2 set 5%-
 
-    # Requires playerctl
     bindl = , XF86AudioNext, exec, playerctl next
     bindl = , XF86AudioPause, exec, playerctl play-pause
     bindl = , XF86AudioPlay, exec, playerctl play-pause
     bindl = , XF86AudioPrev, exec, playerctl previous
-
-    ##############################
-    ### WINDOWS AND WORKSPACES ###
-    ##############################
 
     windowrule = suppressevent maximize, class:.*
     windowrule = nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0
@@ -240,7 +208,6 @@
     windowrulev2 = opacity 0.85 0.85,class:^(VSCodium)$
   '';
   
-  # For Hyprland
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-hyprland ];
 }

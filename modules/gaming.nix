@@ -13,6 +13,5 @@
     protonplus
     mangohud
     goverlay
-    # Add other gaming stuff here like lutris, heroic, etc.
   ];
 }
