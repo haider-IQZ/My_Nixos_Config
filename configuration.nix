@@ -10,8 +10,6 @@
     ./modules/gpu_passthrough.nix
     ./modules/hyprland.nix
     ./modules/waybar.nix
-    ./modules/foot.nix
-    ./modules/fuzzel.nix
   ];
 
 

@@ -28,12 +28,10 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            
-            # Pass inputs to home-manager modules too
             home-manager.extraSpecialArgs = { inherit inputs; };
             
-            # We define the users inside configuration.nix or separate modules, 
-            # so we don't need to put the user block here.
+            # THE MAGIC LINE:
+            home-manager.users.soka = import ./home.nix;
           }
         ];
       };
